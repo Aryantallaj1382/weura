@@ -10,7 +10,7 @@ class CreateChaptersTable extends Migration
     {
         Schema::create('chapters', function(Blueprint $table){
             $table->id();
-            $table->foreignId('manhua_id')->constrained('manhuas')->onDelete('cascade');
+            $table->foreignId('manhwa_id')->constrained('manhwas')->onDelete('cascade');
             $table->integer('chapter_number');
             $table->string('title');
             $table->text('description')->nullable();
@@ -18,7 +18,7 @@ class CreateChaptersTable extends Migration
             $table->boolean('is_paid')->default(false);
             $table->timestamps();
 
-            $table->unique(['manhua_id', 'chapter_number']);
+            $table->unique(['manhwa_id', 'chapter_number']);
         });
     }
 

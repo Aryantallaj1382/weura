@@ -1,11 +1,11 @@
 <?php
 
-// app/Models/Manhua.php
+// app/Models/Manhwa.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Manhua extends Model
+class Manhwa extends Model
 {
     protected $fillable = [
         'title', 'status', 'summary', 'cover_image', 'author_id', 'artist_id'
@@ -30,4 +30,22 @@ class Manhua extends Model
     {
         return $this->hasMany(Chapter::class);
     }
+
+    // app/Models/Manhwa.php
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating');
+    }
+    public function getCoverImageAttribute($value)
+    {
+        return  $value ? asset( $value) : null;
+    }
+
+
 }

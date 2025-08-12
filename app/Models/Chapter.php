@@ -13,6 +13,6 @@ class Chapter extends Model
 
     public function manhua()
     {
-        return $this->belongsTo(Manhua::class);
+        return $this->belongsTo(Manhwa::class);
     }
 }

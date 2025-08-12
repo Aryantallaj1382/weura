@@ -7,17 +7,17 @@ class CreateManhuaCategoryTable extends Migration
 {
     public function up()
     {
-        Schema::create('manhua_category', function(Blueprint $table){
+        Schema::create('manhwa_category', function(Blueprint $table){
             $table->id();
-            $table->foreignId('manhua_id')->constrained('manhuas')->onDelete('cascade');
+            $table->foreignId('manhwa_id')->constrained('manhwas')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['manhua_id', 'category_id']);
+            $table->unique(['manhwa_id', 'category_id']);
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('manhua_category');
+        Schema::dropIfExists('manhwa_category');
     }
 }

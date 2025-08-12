@@ -9,7 +9,7 @@ class CreateManhuaTable extends Migration
 {
     public function up()
     {
-        Schema::create('manhuas', function (Blueprint $table) {
+        Schema::create('manhwas', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->enum('status', ['completed', 'ongoing', 'hiatus'])->default('ongoing');

@@ -11,7 +11,7 @@ class Category extends Model
 
     public function manhuas()
     {
-        return $this->belongsToMany(Manhua::class, 'manhua_category');
+        return $this->belongsToMany(Manhwa::class, 'manhua_category');
     }
 }
 
