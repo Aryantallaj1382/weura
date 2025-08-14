@@ -23,7 +23,7 @@ class Manhwa extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'manhua_category');
+        return $this->belongsToMany(Category::class, 'manhwa_category');
     }
 
     public function chapters()

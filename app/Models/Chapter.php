@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Chapter extends Model
 {
     protected $fillable = [
-        'manhua_id', 'chapter_number', 'title', 'description', 'image', 'is_paid'
+        'manhwa_id', 'chapter_number', 'title', 'description', 'image', 'is_paid'
     ];
 
     public function manhua()
     {
-        return $this->belongsTo(Manhwa::class);
+        return $this->belongsTo(Manhwa::class , 'manhwa_id');
     }
 }
