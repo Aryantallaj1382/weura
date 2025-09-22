@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Auther;
+namespace App\Http\Controllers\Api\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
+    public function index()
+    {
+        $user = auth()->user();
+        return api_response([
+            'name' => $user->name,
+            'email' => $user->email,
+
+        ]);
+
+    }
     public function profile(Request $request)
     {
         $request->validate([

@@ -39,7 +39,8 @@
                 @forelse($user->wallet->transactions ?? [] as $index => $transaction)
                     <tr class="hover:bg-slate-700 transition">
                         <td class="px-4 py-2 text-slate-200">{{ $index + 1 }}</td>
-                        <td class="px-4 py-2 text-slate-200">@if ($transaction->operation_type === 'deposit')
+                        <td class="px-4 py-2 text-slate-200">
+                            @if ($transaction->operation_type === 'deposit')
                                 <span
                                     class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 dark:bg-green-800 dark:text-green-100 rounded-lg">واریز</span>
                             @else

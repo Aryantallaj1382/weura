@@ -5,11 +5,11 @@
         <span>·</span>
         <a href="#" class="hover:underline">قوانین</a>
         <span>·</span>
-        <form method="POST" action="{{ route('logout') }}">
+        <form method="POST" action="{{ route('logout22') }}">
             @csrf
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout22') }}">
                 @csrf
-                <button type="submit" name="logout"
+                <button type="submit" name="logout22"
                         class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-800 px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/60">
                     خروج
                 </button>

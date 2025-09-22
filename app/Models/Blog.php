@@ -19,5 +19,14 @@ class Blog extends Model
     {
         return $this->belongsTo(BlogCategory::class, 'category_id');
     }
+    public function getImageAttribute($value)
+    {
+        return $value ? url("public/$value") : null;
+
+    }
+        public function advertisements()
+        {
+            return $this->morphMany(Advertisement::class, 'advertisable');
+        }
 }
 

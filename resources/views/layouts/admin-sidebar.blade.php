@@ -82,11 +82,29 @@
                     </svg>
                     دسته بندی بلاگ ها
                 </a>
+                <a href="{{ route('admin.coming_soon_manhuas.index') }}"
+                   class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
+                    {{-- آیکون بلاگ --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="h-5 w-5 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-10.5A2.25 2.25 0 0 1 4.5 17.25V6.75m15 0A2.25 2.25 0 0 0 17.25 4.5h-10.5A2.25 2.25 0 0 0 4.5 6.75m15 0H4.5m0 0l3-3m13.5 3l-3-3" />
+                    </svg>
+                    بخش بزودی ها
+                </a>
+
+
+                <a href="{{ route('admin.banners.index') }}"
+                   class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
+                    {{-- آیکون بلاگ --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="h-5 w-5 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-10.5A2.25 2.25 0 0 1 4.5 17.25V6.75m15 0A2.25 2.25 0 0 0 17.25 4.5h-10.5A2.25 2.25 0 0 0 4.5 6.75m15 0H4.5m0 0l3-3m13.5 3l-3-3" />
+                    </svg>
+بنر ها                </a>
 
 
 
-
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout22') }}">
                     @csrf
                     <button type="submit"
                             class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
@@ -99,6 +117,7 @@
                         خروج
                     </button>
                 </form>
+
 
 
 

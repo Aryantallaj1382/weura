@@ -11,10 +11,10 @@
                 ایجاد کتاب جدید
             </a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 gap-6">
             @foreach($manhwas as $manhwa)
 
-                <a href="{{ route('admin.manhwa.show', $manhwa->id) }}" class="block bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-lg transition overflow-hidden">
+                <a href="{{ route('admin.manhwa.show', $manhwa->id) }}" class="block bg-white hover:bg-gray-700 dark:bg-slate-800 rounded-lg shadow hover:shadow-lg transition overflow-hidden">
                     <img src="{{  asset($manhwa->cover_image) }}" alt="{{ $manhwa->title }}" class="w-full h-48 object-cover">
                     <div class="p-4">
                         <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-100">{{ $manhwa->title }}</h2>

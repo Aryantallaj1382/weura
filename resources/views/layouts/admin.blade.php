@@ -6,8 +6,9 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'پنل ادمین') }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>ویورا</title>
+    <link rel="stylesheet" href="{{ asset('build/assets/app-BGsktFXB.css') }}">
+    <script type="module" src="{{ asset('build/assets/app-DlYOw6CL.js') }}"></script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
 
@@ -17,6 +18,7 @@
     @include('layouts.admin-sidebar')
 
     <main class="flex-1 p-6">
+
         @yield('content')
     </main>
 </div>

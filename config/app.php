@@ -117,6 +117,7 @@ return [
     | Supported drivers: "file", "cache"
     |
     */
+    'sms_panel_apikey' => env('APP_SMS_PANEL_APIKEY', ''),
 
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),

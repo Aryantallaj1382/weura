@@ -9,14 +9,21 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // گرفتن همه کاربران مرتب بر اساس جدیدترین‌ها
-        $users = User::orderBy('created_at', 'desc')->paginate(10);
+        $query = User::query();
 
-        // نمایش در ویو
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')->orWhere('email', 'like', '%' . $request->search . '%');
+        }
+
+        $users = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        $users->appends($request->only('search'));
+
         return view('admin.users.index', compact('users'));
     }
+
     public function show($id)
     {
         $user = User::with(['wallet.transactions'])->findOrFail($id);
@@ -28,10 +35,20 @@ class UserController extends Controller
             'status' => 'required|in:successful,pending,failed',
         ]);
 
+        if ($transaction->status === 'pending' && $request->status === 'successful') {
+            $wallet = $transaction->wallet;
+            if ($wallet) {
+                $wallet->balance -= $transaction->amount;
+                $wallet->save();
+            }
+        }
+
+        // تغییر وضعیت تراکنش
         $transaction->status = $request->status;
         $transaction->save();
 
         return back()->with('success', 'وضعیت تراکنش با موفقیت تغییر کرد.');
     }
+
 
 }

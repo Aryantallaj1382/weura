@@ -75,7 +75,7 @@
                     </select>
                 </div>
                 {{-- دسته‌بندی‌ها --}}
-                <div class="md:col-span-2">
+                <div class="flex-1">
                     <label class="block mb-1 text-slate-200 font-medium">دسته‌بندی‌ها</label>
                     <select id="categories" name="categories[]" multiple
                             class="w-full rounded-lg border border-slate-600 bg-slate-900 text-white">

@@ -53,6 +53,16 @@ class BlogController extends Controller
     public function show($id)
     {
         $blog = Blog::with('category')->findOrFail($id);
-        return api_response($blog);
+        $return = [
+            'id' => $blog->id,
+            'title' => $blog->title,
+            'content' => $blog->content,
+            'image' => $blog->image,
+            'category' => $blog->category->name,
+            'created_at' => $blog->created_at,
+            'author' => $blog->author,
+            'advertisement' => $blog?->advertisements?->first()?->image ?? null,
+        ];
+        return api_response($return);
     }
 }

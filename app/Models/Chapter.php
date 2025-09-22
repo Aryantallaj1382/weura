@@ -15,4 +15,9 @@ class Chapter extends Model
     {
         return $this->belongsTo(Manhwa::class , 'manhwa_id');
     }
+    public function getImageAttribute($value)
+    {
+        return $value? url("public/$value") : null;
+
+    }
 }

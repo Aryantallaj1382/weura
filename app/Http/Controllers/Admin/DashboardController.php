@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
+use App\Models\Chapter;
 use App\Models\Manhwa;
 use App\Models\Ticket;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
 use Carbon\Carbon;
@@ -20,6 +23,9 @@ class DashboardController extends Controller
 
         // تعداد مانهوآها
         $manhwaCount = Manhwa::count();
+        $ChapterCount =  Chapter::count();
+        $BlogCount = Blog::count();
+        $viewCount = Manhwa::sum('view');
 
         // مجموع موجودی کیف پول
         $totalBalance = Wallet::sum('balance');
@@ -44,9 +50,11 @@ class DashboardController extends Controller
             'dates' => $dates,
             'counts' => $userCounts,
         ];
+        $transaction = Transaction::where('operation_type', 'deposit')->where('status', 'pending')->get();
 
         // ارسال داده‌ها به ویو
-        return view('admin.dashboard', compact('userCount', 'manhwaCount', 'totalBalance', 'ticket', 'userStats'));
+        return view('admin.dashboard', compact('userCount', 'manhwaCount', 'totalBalance', 'ticket', 'userStats' , 'transaction' ,
+        'ChapterCount', 'BlogCount', 'viewCount'));
     }
 
 }

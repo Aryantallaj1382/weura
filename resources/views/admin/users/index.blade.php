@@ -5,6 +5,18 @@
         <h1 class="text-2xl font-bold text-white mb-6">👥 لیست کاربران</h1>
 
         <div class="overflow-x-auto">
+            <div class="mb-4 flex items-center gap-2">
+                <form method="GET" action="{{ route('admin.users.index') }}" class="flex items-center gap-2 w-full max-w-sm">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                           placeholder="🔍 جستجو بر اساس نام و ایمیل..."
+                           class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white border border-slate-600 focus:outline-none focus:border-indigo-500">
+                    <button type="submit"
+                            class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition">
+                        جستجو
+                    </button>
+                </form>
+            </div>
+
             <table class="w-full text-sm text-left text-slate-700 dark:text-slate-300">
                 <thead class="bg-slate-900">
                 <tr>

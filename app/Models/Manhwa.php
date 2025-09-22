@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Manhwa extends Model
 {
     protected $fillable = [
-        'title', 'status', 'summary', 'cover_image', 'author_id', 'artist_id'
+        'title', 'status', 'summary', 'cover_image', 'author_id', 'artist_id' ,'view'
     ];
 
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function advertisements()
+    {
+        return $this->morphMany(Advertisement::class, 'advertisable');
     }
 
     public function artist()
@@ -44,8 +49,9 @@ class Manhwa extends Model
     }
     public function getCoverImageAttribute($value)
     {
-        return  $value ? asset( $value) : null;
+        return $value ? asset('public/' . ltrim($value, '/')) : null;
     }
+
 
 
 }

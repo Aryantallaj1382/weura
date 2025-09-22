@@ -9,9 +9,10 @@
             </a>
         </div>
 
+
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($blogs as $blog)
-                <div class="bg-slate-700 rounded-lg overflow-hidden relative group">
+                <div class="bg-slate-700 rounded-lg overflow-hidden relative ">
                     {{-- عکس بلاگ --}}
                     <img src="{{  asset($blog->image) }}" alt="{{ $blog->title }}" class="w-full h-48 object-cover">
 
@@ -22,9 +23,9 @@
 
                     {{-- سه نقطه و منوی عملیات --}}
                     <div class="absolute top-2 right-2">
-                        <div class="relative inline-block text-left">
-                            <button class="text-white font-bold p-1 rounded hover:bg-slate-600 transition">•••</button>
-                            <div class="hidden group-hover:block absolute right-0 mt-2 w-36 bg-slate-800 rounded shadow-lg z-10">
+                        <div class="relative inline-block text-left group">
+                            <button class="text-white  font-bold p-1 rounded hover:bg-slate-600 transition">•••</button>
+                            <div class="hidden group-hover:block absolute right-0  w-36 bg-slate-800 rounded shadow-lg z-10">
                                 <a href="{{ route('admin.blog.show', $blog->id) }}" class="block px-4 py-2 text-sm text-white hover:bg-slate-600">نمایش</a>
                                 <a href="{{ route('admin.blog.edit', $blog->id) }}" class="block px-4 py-2 text-sm text-white hover:bg-slate-600">ویرایش</a>
                                 <form action="{{ route('admin.blog.destroy', $blog->id) }}" method="POST" onsubmit="return confirm('آیا مطمئن هستید؟');">

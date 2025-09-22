@@ -36,6 +36,34 @@
                 </div>
                 <div class="text-indigo-500 text-3xl">📈</div>
             </div>
+            <div class="bg-white dark:bg-slate-900 rounded-xl shadow p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">تعداد چپتر ها</p>
+                    <h3 class="text-2xl font-bold mt-1">{{$ChapterCount}}</h3>
+                </div>
+                <div class="text-indigo-500 text-3xl">📈</div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-xl shadow p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">تعداد بلاگ ها</p>
+                    <h3 class="text-2xl font-bold mt-1">{{$BlogCount}}</h3>
+                </div>
+                <div class="text-indigo-500 text-3xl">📈</div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-xl shadow p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">تعداد نویسنده ها</p>
+                    <h3 class="text-2xl font-bold mt-1">0</h3>
+                </div>
+                <div class="text-indigo-500 text-3xl">📈</div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-xl shadow p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">بازدید ها</p>
+                    <h3 class="text-2xl font-bold mt-1">{{$viewCount}}</h3>
+                </div>
+                <div class="text-indigo-500 text-3xl">📈</div>
+            </div>
         </div>
 
 
@@ -87,42 +115,57 @@
 
         {{-- جدول سفارشات اخیر --}}
         <div class="bg-white dark:bg-slate-900 rounded-xl shadow p-6">
-            <h3 class="text-lg font-bold mb-4">سفارشات اخیر</h3>
+            <h3 class="text-lg font-bold mb-4">درخواست های برداشت</h3>
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <table class="min-w-full table-auto border-collapse">
                     <thead>
                     <tr class="bg-gray-100 dark:bg-gray-800">
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">نام مشتری</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">محصول</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">مقدار</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">وضعیت</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">تاریخ</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">نام</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">شماره کارت</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">مقدار</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">وضعیت</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">تاریخ</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">کیف پول کاربر</th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    <tr>
-                        <td class="px-4 py-2">آریان</td>
-                        <td class="px-4 py-2">کلاس خصوصی</td>
-                        <td class="px-4 py-2">1</td>
-                        <td class="px-4 py-2 text-green-500 font-semibold">تکمیل شده</td>
-                        <td class="px-4 py-2">1402/05/10</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">بهناز</td>
-                        <td class="px-4 py-2">وبینار</td>
-                        <td class="px-4 py-2">3</td>
-                        <td class="px-4 py-2 text-yellow-500 font-semibold">در انتظار</td>
-                        <td class="px-4 py-2">1402/05/12</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2">محمد</td>
-                        <td class="px-4 py-2">کلاس گروهی</td>
-                        <td class="px-4 py-2">2</td>
-                        <td class="px-4 py-2 text-red-500 font-semibold">کنسل شده</td>
-                        <td class="px-4 py-2">1402/05/15</td>
-                    </tr>
+                    @forelse($transaction ?? [] as $transaction)
+                        <tr>
+                            <td class="px-4 py-2">{{ $transaction->wallet->user->name }}</td>
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                <span id="cart-number-{{ $transaction->id }}" class="select-all">{{ $transaction->cart_number }}</span>
+                                <button onclick="copyToClipboard('{{ $transaction->cart_number }}')"
+                                        class="px-2 py-1 bg-slate-800 text-white text-xs rounded hover:bg-slate-600 transition">
+                                    📋 کپی
+                                </button>
+                            </td>
+                            <td class="px-4 py-2">{{ number_format($transaction->amount) }}     تومان </td>
+                            <td class="px-4 py-2 text-yellow-500 font-semibold">در انتظار</td>
+                            <td class="px-4 py-2">
+                                {{ \Morilog\Jalali\Jalalian::fromDateTime($transaction->created_at)->format('H:i - Y/m/d') }}
+                            </td>
+                            <td class="px-2 py-2 text-blue-500 hover:text-red-800 font-semibold"><a href="{{ route('admin.users.show' ,  $transaction->wallet->user->id ) }}"> رفتن به کیف پول</a></td>
+
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-4 py-2 text-center text-slate-400">
+                                درخواستی وجود ندارد.
+                            </td>
+                        </tr>
+                    @endforelse
                     </tbody>
                 </table>
+                <script>
+                    function copyToClipboard(text) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            alert('شماره کارت کپی شد ✅');
+                        }).catch(err => {
+                            console.error('خطا در کپی کردن: ', err);
+                        });
+                    }
+                </script>
+
             </div>
         </div>
 
@@ -131,15 +174,15 @@
             <h3 class="text-lg font-bold mb-4">فعالیت اخیر</h3>
             <ul class="space-y-2">
                 <li class="flex justify-between">
-                    <span>آریان کلاس خصوصی را رزرو کرد</span>
+                    <span>آریان مانوایی را لایک کرد</span>
                     <span class="text-gray-500 text-sm">5 دقیقه قبل</span>
                 </li>
                 <li class="flex justify-between">
-                    <span>بهناز وبینار را لغو کرد</span>
+                    <span>علی ثبت نام کرد</span>
                     <span class="text-gray-500 text-sm">10 دقیقه قبل</span>
                 </li>
                 <li class="flex justify-between">
-                    <span>محمد کلاس گروهی را تکمیل کرد</span>
+                    <span>محمد تیکت فرستاد</span>
                     <span class="text-gray-500 text-sm">30 دقیقه قبل</span>
                 </li>
             </ul>

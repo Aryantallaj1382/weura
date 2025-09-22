@@ -13,13 +13,13 @@ class BlogController extends Controller
     public function index()
     {
         $blogs = Blog::with('category')->latest()->paginate(12);
-        return view('admin.blog.index', compact('blogs'));
+        return view('admin.Blog.index', compact('blogs'));
     }
 
     public function create()
     {
         $categories = BlogCategory::all();
-        return view('admin.blog.create', compact('categories'));
+        return view('admin.Blog.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -47,7 +47,7 @@ class BlogController extends Controller
     {
         $blog = Blog::findOrFail($id);
         $categories = BlogCategory::all();
-        return view('admin.blog.edit', compact('blog','categories'));
+        return view('admin.Blog.edit', compact('blog','categories'));
     }
 
     public function update(Request $request, $id)
@@ -65,7 +65,7 @@ class BlogController extends Controller
         $blog->category_id = $request->category_id;
         $blog->title = $request->title;
         $blog->author = $request->author;
-        $blog->content = $request->content;
+//        $blog->content = $request->content;
 
         if ($request->hasFile('image')) {
             if ($blog->image) {
@@ -75,6 +75,7 @@ class BlogController extends Controller
         }
 
         $blog->save();
+
 
         return redirect()->route('admin.blog.index')->with('success', 'بلاگ با موفقیت بروزرسانی شد.');
     }
@@ -93,7 +94,7 @@ class BlogController extends Controller
     public function show($id)
     {
         $blog = Blog::with('category')->findOrFail($id);
-        return view('admin.blog.show', compact('blog'));
+        return view('admin.Blog.show', compact('blog'));
     }
 
 }
