@@ -40,7 +40,6 @@ class ManhwaController extends Controller
             'title' => 'required',
             'summary' => 'required',
             'cover_image' => 'required',
-            'artist_id' => 'nullable',
         ]);
         $imagePath = $request->file('cover_image')->store('manhwa', 'public');
         $user = auth()->user();
@@ -49,7 +48,7 @@ class ManhwaController extends Controller
             'summary' => $request->summary,
             'cover_image' => $imagePath,
             'author_id' =>$user->id,
-            'artist_id' => $request->artist_id,
+            'artist_id' => $user->id,
         ]);
         return api_response($manhwa);
 
@@ -57,10 +56,9 @@ class ManhwaController extends Controller
     public function update(Request $request, Manhwa $manhwa)
     {
         $request->validate([
-            'title' => 'required',
-            'summary' => 'required',
-            'cover_image' => 'required',
-            'artist_id' => 'nullable',
+            'title' => 'nullable',
+            'summary' => 'nullable',
+            'cover_image' => 'nullable',
 
         ]);
         if ($request->hasFile('cover_image')) {
@@ -75,7 +73,6 @@ class ManhwaController extends Controller
             'summary' => $request->summary,
             'cover_image' => $manhwa->cover_image,
             'author_id' => $request->author_id,
-            'artist_id' => $request->artist_id,
 
         ]);
 

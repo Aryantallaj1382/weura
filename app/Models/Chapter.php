@@ -20,4 +20,9 @@ class Chapter extends Model
         return $value? url("public/$value") : null;
 
     }
+    public function readers()
+    {
+        return $this->belongsToMany(User::class, 'user_chapters')->withTimestamps();
+    }
+
 }

@@ -63,7 +63,7 @@ class AuthController extends Controller
             if (!empty($data['mobile'])) {
                 (new Client(config('app.sms_panel_apikey')))
                     ->sendPattern(
-                        'i5ptms6ccqcs3e5',
+                        '5kybw03wwfjfn3v',
                         '3000505',
                         $data['mobile'],
                         ['code' => $code]
@@ -122,7 +122,7 @@ class AuthController extends Controller
 
         // پیدا کردن temp_user مربوط به این موبایل
         $tempUser = TempUser::
-            where('mobile', $request->mobile)
+            where( 'mobile', $request->mobile)
             ->first();
 
         if (!$tempUser) {
@@ -151,6 +151,8 @@ class AuthController extends Controller
 
         return api_response([
             'token'   => $token,
+            'mobile' => $user->mobile,
+
         ] , 'ثبت نام با موفقیت انجام شد');
     }
 
@@ -159,15 +161,42 @@ class AuthController extends Controller
     {
         $request->validate([
             'mobile' => 'required|numeric',
-            'password' => 'required|string',
+            'password' => 'nullable|string',
+            'otp' => 'nullable|string',
         ]);
+
+        if (!empty($request->otp) && !empty($request->password)) {
+            return api_response([], 'لطفا فقط یکی از رمز یا کد پیامکی را وارد کنید', 422);
+        }
 
         $user = User::where('mobile', $request->mobile)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user) {
             throw ValidationException::withMessages([
-                'mobile' => ['شماره موبایل یا رمز عبور اشتباه است.'],
+                'mobile' => ['کاربر یافت نشد.'],
             ]);
+        }
+        if (!empty($request->password)) {
+            if (!Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'mobile' => ['شماره موبایل یا رمز عبور اشتباه است.'],
+                ]);
+            }
+        }
+        if (!empty($request->otp)) {
+            if ($user->sms_sent_code !== $request->otp) {
+                throw ValidationException::withMessages([
+                    'otp' => ['کد وارد شده نامعتبر است.'],
+                ]);
+            }
+
+            $user->update([
+                'sms_sent_code' => null,
+            ]);
+        }
+
+        if (empty($request->sms_sent_code) && empty($request->password)) {
+            return api_response([], 'لطفا رمز عبور یا کد پیامکی را وارد کنید', 422);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -175,8 +204,10 @@ class AuthController extends Controller
         return api_response([
             'token' => $token,
             'role' => $user->role,
-        ],'ورود موفقیت‌آمیز');
+            'mobile' => $user->mobile,
+        ], 'ورود موفقیت‌آمیز');
     }
+
 
     public function resetPasswordWithOtp(Request $request)
     {

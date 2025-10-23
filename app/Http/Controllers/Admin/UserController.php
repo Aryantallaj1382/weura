@@ -49,6 +49,16 @@ class UserController extends Controller
 
         return back()->with('success', 'وضعیت تراکنش با موفقیت تغییر کرد.');
     }
+    public function updateRole(Request $request, User $user)
+    {
+        $request->validate([
+            'role' => 'required|in:user,writer,artist,translator',
+        ]);
+
+        $user->update(['role' => $request->role]);
+
+        return redirect()->back()->with('success', 'نقش کاربر با موفقیت به‌روز شد.');
+    }
 
 
 }

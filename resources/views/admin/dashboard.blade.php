@@ -94,9 +94,9 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        plugins: {legend: {display: false}},
                         scales: {
-                            x: { ticks: { color: '#fff' } },
+                            x: {ticks: {color: '#fff'}},
                             y: {
                                 beginAtZero: true,
                                 ticks: {
@@ -121,11 +121,15 @@
                     <thead>
                     <tr class="bg-gray-100 dark:bg-gray-800">
                         <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">نام</th>
-                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">شماره کارت</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">شماره
+                            کارت
+                        </th>
                         <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">مقدار</th>
                         <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">وضعیت</th>
                         <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">تاریخ</th>
-                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">کیف پول کاربر</th>
+                        <th class="px-4 py-2 text-right text-sm font-medium text-gray-700 dark:text-gray-300">کیف پول
+                            کاربر
+                        </th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -133,18 +137,21 @@
                         <tr>
                             <td class="px-4 py-2">{{ $transaction->wallet->user->name }}</td>
                             <td class="px-4 py-2 flex items-center gap-2">
-                                <span id="cart-number-{{ $transaction->id }}" class="select-all">{{ $transaction->cart_number }}</span>
+                                <span id="cart-number-{{ $transaction->id }}"
+                                      class="select-all">{{ $transaction->cart_number }}</span>
                                 <button onclick="copyToClipboard('{{ $transaction->cart_number }}')"
                                         class="px-2 py-1 bg-slate-800 text-white text-xs rounded hover:bg-slate-600 transition">
                                     📋 کپی
                                 </button>
                             </td>
-                            <td class="px-4 py-2">{{ number_format($transaction->amount) }}     تومان </td>
+                            <td class="px-4 py-2">{{ number_format($transaction->amount) }} تومان</td>
                             <td class="px-4 py-2 text-yellow-500 font-semibold">در انتظار</td>
                             <td class="px-4 py-2">
                                 {{ \Morilog\Jalali\Jalalian::fromDateTime($transaction->created_at)->format('H:i - Y/m/d') }}
                             </td>
-                            <td class="px-2 py-2 text-blue-500 hover:text-red-800 font-semibold"><a href="{{ route('admin.users.show' ,  $transaction->wallet->user->id ) }}"> رفتن به کیف پول</a></td>
+                            <td class="px-2 py-2 text-blue-500 hover:text-red-800 font-semibold"><a
+                                    href="{{ route('admin.users.show' ,  $transaction->wallet->user->id ) }}"> رفتن به
+                                    کیف پول</a></td>
 
                         </tr>
                     @empty
@@ -173,18 +180,13 @@
         <div class="bg-white dark:bg-slate-900 rounded-xl shadow p-6">
             <h3 class="text-lg font-bold mb-4">فعالیت اخیر</h3>
             <ul class="space-y-2">
-                <li class="flex justify-between">
-                    <span>آریان مانوایی را لایک کرد</span>
-                    <span class="text-gray-500 text-sm">5 دقیقه قبل</span>
-                </li>
-                <li class="flex justify-between">
-                    <span>علی ثبت نام کرد</span>
-                    <span class="text-gray-500 text-sm">10 دقیقه قبل</span>
-                </li>
-                <li class="flex justify-between">
-                    <span>محمد تیکت فرستاد</span>
-                    <span class="text-gray-500 text-sm">30 دقیقه قبل</span>
-                </li>
+                @foreach($ac as $activty)
+                    <li class="flex justify-between">
+                        <span>کاربر<b class="text-blue-400">{{ $activty->user->name }}</b>{{ ' ' . $activty->description }}</span>
+                        <span class="text-gray-500 text-sm">{{$activty->created_at?->format('H:i')}}</span>
+                    </li>
+                @endforeach
+
             </ul>
         </div>
     </div>
@@ -197,17 +199,17 @@
         new Chart(salesCtx, {
             type: 'line',
             data: {
-                labels: ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور'],
+                labels: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'],
                 datasets: [{
                     label: 'درآمد',
-                    data: [1200,1900,3000,2500,3200,4000],
+                    data: [1200, 1900, 3000, 2500, 3200, 4000],
                     borderColor: '#4f46e5',
                     backgroundColor: 'rgba(79, 70, 229,0.2)',
                     fill: true,
                     tension: 0.4
                 }]
             },
-            options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} }
+            options: {responsive: true, plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true}}}
         });
 
         // نمودار دایره‌ای سفارشات
@@ -215,13 +217,13 @@
         new Chart(orderCtx, {
             type: 'doughnut',
             data: {
-                labels: ['تکمیل شده','در انتظار','کنسل شده'],
-                datasets:[{
-                    data:[12,5,3],
-                    backgroundColor:['#22c55e','#eab308','#ef4444']
+                labels: ['تکمیل شده', 'در انتظار', 'کنسل شده'],
+                datasets: [{
+                    data: [12, 5, 3],
+                    backgroundColor: ['#22c55e', '#eab308', '#ef4444']
                 }]
             },
-            options: { responsive:true, plugins:{legend:{position:'bottom'}} }
+            options: {responsive: true, plugins: {legend: {position: 'bottom'}}}
         });
     </script>
 @endsection

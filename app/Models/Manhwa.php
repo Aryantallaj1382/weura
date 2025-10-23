@@ -43,13 +43,24 @@ class Manhwa extends Model
         return $this->hasMany(Rating::class);
     }
 
-    public function averageRating()
+    public function getAverageRatingAttribute()
     {
-        return $this->ratings()->avg('rating');
+        return $this->ratings()->avg('rating') ?? 0;
     }
+
     public function getCoverImageAttribute($value)
     {
         return $value ? asset('public/' . ltrim($value, '/')) : null;
+    }
+
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'manhwa_likes')
+            ->withTimestamps();
+    }
+    public function getCategoryAttribute()
+    {
+        return $this->categories->first()?->name;
     }
 
 

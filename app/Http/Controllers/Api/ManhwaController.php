@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Chapter;
 use App\Models\ComingSoonManhua;
 use App\Models\Manhwa;
+use App\Models\SupportWork;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -23,6 +24,7 @@ class ManhwaController extends Controller
                 'title' => $manhwa->title,
                 'image' => $manhwa->cover_image,
                 'created_at' => $manhwa->created_at,
+                'episode' => $manhwa?->chapters?->count() ?? 0,
             ];
         });
 
@@ -51,6 +53,14 @@ class ManhwaController extends Controller
         });
 
         $suggested = SystemSetting::where('name','suggested')->value('value');
+        $suggested_manhua = Manhwa::where('id' , $suggested)->first();
+        $a = [
+            'id' => $suggested_manhua->id,
+            'title' => $suggested_manhua->title,
+            'image' => $suggested_manhua->cover_image,
+            'category' => $suggested_manhua->category,
+            'rating' => $suggested_manhua->averageRating,
+        ];
 
         $coming_soon = ComingSoonManhua::all();
 
@@ -59,7 +69,7 @@ class ManhwaController extends Controller
                 'id' => $banner->id,
                 'title' => $banner->manhuas->title,
                 'image' => $banner->manhuas->cover_image,
-                'rating' => $banner->manhuas?->rating ?? 0,
+                'rating' => $banner->manhuas?->averageRating ?? 0,
             ];
         });
         return api_response([
@@ -68,7 +78,7 @@ class ManhwaController extends Controller
             'popular' => $popularManhuas,
             'random' => $randomManhuas,
             'category' => $category,
-            'suggested' => $suggested ?url("public/$suggested"):null,
+            'suggested' => $a,
             'coming_soon' => $coming_soon,
 
         ]);
@@ -118,8 +128,67 @@ class ManhwaController extends Controller
         }
         public function chapters($id)
         {
-            $chapters = Chapter::find($id);
-            return api_response(['image'=>$chapters->image]);
+            $chapter = Chapter::findOrFail($id);
 
+            if (auth()->check()) {
+                $user = auth()->user();
+
+                auth()->user()->readChapters()->syncWithoutDetaching([$chapter->id]);
+                \App\Models\UserActivity::create([
+                    'user_id' => $user->id,
+                    'description' => "شما چپتر شماره {$chapter->chapter_number} از مانهوای {$chapter->manhua->title} را خواندید.",
+                ]);
+            }
+
+            return api_response(['image' => $chapter->image]);
         }
+
+
+    public function toggle($id)
+    {
+        $user = auth()->user();
+        $manhwa = Manhwa::findOrFail($id);
+
+        if ($user->likedManhwas()->where('manhwa_id', $manhwa->id)->exists()) {
+            // آنلایک
+            $user->likedManhwas()->detach($manhwa->id);
+            return api_response(['liked' => false, 'message' => 'آنلایک شد']);
+        } else {
+            // لایک
+            $user->likedManhwas()->attach($manhwa->id);
+            return api_response(['liked' => true, 'message' => 'لایک شد']);
+        }
+    }
+
+
+    public function supportWithWallet(Request $request)
+    {
+        $request->validate([
+            'manhwa_id' => 'required|exists:manhwas,id',
+            'amount'    => 'required|numeric|min:1',
+        ]);
+
+        $user = auth()->user();
+        $wallet = $user->wallet();
+        $balance = $wallet->balance ?? 0;
+
+        if ($balance < $request->amount) {
+            return api_response([], 'موجودی کیف پول کافی نیست.');
+        }
+
+        // کم کردن مبلغ از کیف پول کاربر
+        $wallet->balance -= $request->amount;
+        $wallet->save();
+
+
+        // ثبت حمایت
+        SupportWork::create([
+            'user_id'   => $user->id,
+            'manhwa_id' => $request->manhwa_id,
+            'amount'    => $request->amount,
+            'type'      => 'wallet',
+        ]);
+
+        return api_response([], 'حمایت با موفقیت انجام شد.');
+    }
     }

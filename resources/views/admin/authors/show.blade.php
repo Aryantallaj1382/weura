@@ -2,29 +2,17 @@
 
 @section('content')
     <div class="p-6">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-700 bg-slate-900 mb-6">
-            <div>
-                <h1 class="text-2xl font-bold text-white mb-2">👤 جزئیات کاربر: {{ $user->name }}</h1>
-
-                <!-- نقش کاربر با امکان ویرایش -->
-                <form method="POST" action="{{ route('admin.users.updateRole', $user->id) }}">
-                    @csrf
-                    @method('PATCH')
-                    <label class="text-sm text-gray-300 mr-2">نقش کاربر:</label>
-                    <select name="role" onchange="this.form.submit()"
-                            class="text-sm rounded-lg px-2 py-1 border border-slate-700 bg-slate-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
-                        <option value="writer" {{ $user->role === 'writer' ? 'selected' : '' }}>Writer</option>
-                        <option value="artist" {{ $user->role === 'artist' ? 'selected' : '' }}>Artist</option>
-                        <option value="translator" {{ $user->role === 'translator' ? 'selected' : '' }}>Translator</option>
-                    </select>
-                </form>
-            </div>
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-700 bg-slate-900">
+            <h1 class="text-lg font-bold text-white">
+                <h1 class="text-2xl font-bold text-white mb-6">👤 جزئیات کاربر: {{ $user->name }}</h1>
+            </h1>
 
             <a href="{{ route('admin.users.index') }}"
                class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium rounded-lg shadow-sm transition transform hover:scale-105">
                 ← بازگشت
             </a>
+
+
         </div>
 
         <div class="mb-6 p-4 bg-slate-800 rounded-lg shadow text-center">
@@ -97,6 +85,55 @@
                 @endforelse
                 </tbody>
             </table>
+
+            <div class="mt-6 p-4 bg-slate-800 rounded-lg shadow">
+                <h2 class="text-xl font-semibold text-white mb-4">📚 مانهواهای کاربر</h2>
+
+                @if($manhuas->count() > 0)
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-200">
+                            <thead class="bg-slate-900">
+                            <tr>
+                                <th class="px-4 py-2">#</th>
+                                <th class="px-4 py-2">عنوان</th>
+                                <th class="px-4 py-2">تاریخ ایجاد</th>
+                                <th class="px-4 py-2">وضعیت</th>
+                            </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700">
+                            @foreach($manhuas as $index => $manhwa)
+                                <tr class="hover:bg-slate-700 transition">
+                                    <td class="px-4 py-2">{{ $index + 1 }}</td>
+                                    <td class="px-4 py-2 break-words">{{ $manhwa->title }}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-slate-400">
+                                        {{ \Morilog\Jalali\Jalalian::fromDateTime($manhwa->created_at)->format('Y/m/d') }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        @if($manhwa->status === 'completed')
+                                            <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-lg">تمام شده</span>
+                                        @elseif($manhwa->status === 'ongoing')
+                                            <span class="px-2 py-1 text-xs font-semibold text-blue-400-800 border-gray-600 rounded-lg">درحال انتشار</span>
+
+                                        @elseif($manhwa->status === 'hiatus')
+                                            <span class="px-2 py-1 text-xs font-semibold text-red-600-400-800 bg-black rounded-lg">متوقف شده</span>
+                                        @else
+                                            <span class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-lg">در حال بررسی</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+
+                        <div class="mt-4">
+                            {{ $manhuas->links() }}
+                        </div>
+                    </div>
+                @else
+                    <p class="text-slate-400">این کاربر هنوز مانهوا ایجاد نکرده است.</p>
+                @endif
+            </div>
+
         </div>
 
     </div>

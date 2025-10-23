@@ -41,6 +41,17 @@
 
                     کاربران
                 </a>
+                <a href="{{ route('admin.author.index') }}"
+                   class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
+                    {{-- آیکون --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M17 20h5v-2a4 4 0 00-3-3.87M12 12a4 4 0 100-8 4 4 0 000 8zm0 0v6m5 4h-10a4 4 0 01-4-4v-2a4 4 0 013-3.87"/>
+                    </svg>
+
+                    نویسندگان
+                </a>
                 <a href="{{ route('admin.manhwa.index') }}"
                    class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
                     {{-- آیکون --}}
@@ -101,6 +112,38 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-10.5A2.25 2.25 0 0 1 4.5 17.25V6.75m15 0A2.25 2.25 0 0 0 17.25 4.5h-10.5A2.25 2.25 0 0 0 4.5 6.75m15 0H4.5m0 0l3-3m13.5 3l-3-3" />
                     </svg>
 بنر ها                </a>
+
+
+                <a href="{{ route('admin.suggested.edit') }}"
+                   class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
+                    {{-- آیکون بلاگ --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="h-5 w-5 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-10.5A2.25 2.25 0 0 1 4.5 17.25V6.75m15 0A2.25 2.25 0 0 0 17.25 4.5h-10.5A2.25 2.25 0 0 0 4.5 6.75m15 0H4.5m0 0l3-3m13.5 3l-3-3" />
+                    </svg>
+                    پیشنهاد امروز               </a>
+
+
+
+                <a href="{{ route('admin.author-requests.index') }}"
+                   class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
+                    {{-- آیکون بلاگ --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="h-5 w-5 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-10.5A2.25 2.25 0 0 1 4.5 17.25V6.75m15 0A2.25 2.25 0 0 0 17.25 4.5h-10.5A2.25 2.25 0 0 0 4.5 6.75m15 0H4.5m0 0l3-3m13.5 3l-3-3" />
+                    </svg>
+                    درخواست نویسنده شدن               </a>
+
+
+
+                <a href="{{ route('admin.newsletters.index') }}"
+                   class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">
+                    {{-- آیکون بلاگ --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="h-5 w-5 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-10.5A2.25 2.25 0 0 1 4.5 17.25V6.75m15 0A2.25 2.25 0 0 0 17.25 4.5h-10.5A2.25 2.25 0 0 0 4.5 6.75m15 0H4.5m0 0l3-3m13.5 3l-3-3" />
+                    </svg>
+                    خبرنامه ها              </a>
 
 
 

@@ -11,12 +11,18 @@ class NewsletterController extends Controller
 {
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'email' => 'required|email|unique:newsletters,email',
+        $request->validate([
+            'email' => 'required|email|max:255',
         ]);
 
-        $newsletter = Newsletter::create($validated);
+        $email = $request->email;
 
-        return api_response($newsletter, 'ایمیل با موفقیت ثبت شد');
+        if (Newsletter::where('email', $email)->exists()) {
+            return api_response([], 'این ایمیل قبلا در خبرنامه ثبت شده است.' , 422);
+        }
+
+        Newsletter::create(['email' => $email]);
+
+        return api_response([], 'با موفقیت در خبرنامه ثبت شد.');
     }
 }

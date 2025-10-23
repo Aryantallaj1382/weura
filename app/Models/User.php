@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,  HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +27,11 @@ class User extends Authenticatable
         'sms_sent_date',
         'sms_sent_tries',
         'role',
-        'profile'
+        'profile',
+        'notify_new_chapter',
+        'notify_user_referral',
+        'notify_promotions',
+        'notify_donation'
     ];
 
     /**
@@ -52,8 +56,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function wallet()
     {
         return $this->hasOne(Wallet::class);
     }
+
+    public function readChapters()
+    {
+        return $this->belongsToMany(Chapter::class, 'user_chapters')->withTimestamps();
+    }
+
+    public function likedManhwas()
+    {
+        return $this->belongsToMany(Manhwa::class, 'manhwa_likes')
+            ->withTimestamps();
+    }
+
 }

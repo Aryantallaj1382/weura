@@ -9,6 +9,7 @@ use App\Models\Manhwa;
 use App\Models\Ticket;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserActivity;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ class DashboardController extends Controller
         $dates = collect();
         $userCounts = collect();
 
+        $ac = UserActivity::latest()->take(5)->get();
         // حلقه ۳۰ روز اخیر
         for ($i = 15; $i >= 0; $i--) {
             $date = Carbon::now()->subDays($i);
@@ -54,7 +56,7 @@ class DashboardController extends Controller
 
         // ارسال داده‌ها به ویو
         return view('admin.dashboard', compact('userCount', 'manhwaCount', 'totalBalance', 'ticket', 'userStats' , 'transaction' ,
-        'ChapterCount', 'BlogCount', 'viewCount'));
+        'ChapterCount', 'BlogCount', 'viewCount' , 'ac'));
     }
 
 }
