@@ -33,7 +33,7 @@ class ContactUsController extends Controller
                 'created_at' => $blog->created_at,
             ];
         });
-        api_response($blogs);
+       return api_response($blogs);
 
     }
 }

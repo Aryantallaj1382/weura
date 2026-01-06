@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\BlogCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -30,14 +32,28 @@ class BlogController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function category()
     {
-        $blogs = Blog::with('category')->get();
+        $category = BlogCategory::all();
+        return api_response($category);
 
-        $blogs->transform(function ($item) {
+    }
+    public function index(Request $request)
+    {
+        $blogs = Blog::with('category');
+        if ($request->search) {
+            $blogs = $blogs->where('title', 'like', '%' . $request->search . '%');
+        }
+        if ($request->category) {
+            $blogs = $blogs->where('category_id', $request->category);
+        }
+        $blogs = $blogs->paginate();
+        $blogs->getCollection()->transform(function ($item) {
             return [
                 'id' => $item->id,
+                'content' => Str::limit($item->content, 30),
                 'title' => $item->title,
+                'author' => $item->author,
                 'image' => $item->image,
                 'category' => $item->category->name,
                 'created_at' => $item->created_at,
@@ -46,6 +62,19 @@ class BlogController extends Controller
 
         return api_response($blogs);
     }
+    public function popular()
+    {
+        $blogs = Blog::with('category')->orderBy('view', 'desc')->take(4)->get();
+        $a = $blogs->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'image' => $item->image,
+                'title' => $item->title,
+            ];
+        });
+        return api_response($a);
+
+    }
 
 
 
@@ -53,6 +82,7 @@ class BlogController extends Controller
     public function show($id)
     {
         $blog = Blog::with('category')->findOrFail($id);
+        $blog->increment('view');
         $return = [
             'id' => $blog->id,
             'title' => $blog->title,

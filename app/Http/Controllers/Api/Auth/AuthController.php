@@ -190,12 +190,9 @@ class AuthController extends Controller
                 ]);
             }
 
-            $user->update([
-                'sms_sent_code' => null,
-            ]);
         }
 
-        if (empty($request->sms_sent_code) && empty($request->password)) {
+        if (empty($request->otp) && empty($request->password)) {
             return api_response([], 'لطفا رمز عبور یا کد پیامکی را وارد کنید', 422);
         }
 

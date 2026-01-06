@@ -13,6 +13,7 @@ class Blog extends Model
         'author',
         'content',
         'image',
+        'view'
     ];
 
     public function category()

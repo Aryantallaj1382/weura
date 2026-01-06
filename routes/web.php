@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\AuthorRequestController;
 use App\Http\Controllers\Admin\BannerController;
@@ -25,14 +26,17 @@ Route::get('/optimize', function () {
     Artisan::call('optimize');
     dd(Artisan::output());
 });
-Route::get('/', [DashboardController::class, 'index']);
 
+Route::middleware('guest:web')->group(function() {
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+});
 
-Route::post('login', [LoginController::class, 'login'])->name('login');
-Route::post('logout', [LoginController::class, 'logout'])->name('logout22');
+Route::post('/logout', [AdminAuthController::class, 'logout'])->middleware('admin')->name('logout');
+Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
-Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index']);
 
     Route::prefix('newsletters')->name('newsletters.')->group(function () {
         Route::get('/', [NewsletterController::class, 'index'])->name('index');

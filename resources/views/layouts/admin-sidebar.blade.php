@@ -147,7 +147,7 @@
 
 
 
-                <form method="POST" action="{{ route('logout22') }}">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
                             class="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition">

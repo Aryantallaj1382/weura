@@ -36,13 +36,21 @@ class ManhwaController extends Controller
                     'id' => $manhwa->id,
                     'title' => $manhwa->title,
                     'image' => $manhwa->cover_image,
-                    'rating' => $manhwa->rating,
-                    'ratings_avg_rating' => $manhwa->ratings_avg_rating,
+                    'rating' => $manhwa->average_rating,
                     'category' => $manhwa->category,
                 ];
             });
 
-        $randomManhuas = Manhwa::inRandomOrder()->take(6)->get();
+        $randomManhuas = Manhwa::inRandomOrder()->take(6)->get()->map(function ($manhwa) {
+            return [
+                'id' => $manhwa->id,
+                'title' => $manhwa->title,
+                'image' => $manhwa->cover_image,
+                'created_at' => $manhwa->created_at,
+                'artist' => $manhwa->artist->name,
+                'author' => $manhwa->author->name,
+            ];
+        });
 
         $category = Category::all();
 

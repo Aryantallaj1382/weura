@@ -28,13 +28,15 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('archive')->controller(\App\Http\Controllers\Api\ArchiveController::class)->group(function () {
         Route::get('/',  'index');
-
-
+        Route::get('/get_category',  'get_category');
     });
     Route::post('/author-requests', [AuthorRequestController::class, 'store']);
 
+
     Route::prefix('blogs')->controller(BlogController::class)->group(function () {
         Route::get('/',  'index');
+        Route::get('/popular',  'popular');
+        Route::get('/category',  'category');
         Route::get('/{id}',  'show');
 
     });
@@ -45,7 +47,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/check-user-exists', [AuthController::class, 'checkUserExists']); // بررسی وجود کاربر
         Route::post('/register', [AuthController::class, 'register']);        // ثبت نام
         Route::post('/login', [AuthController::class, 'login']);              // ورود
-        Route::middleware('api.auth')->post('/logout', [AuthController::class, 'logout']); // خروج
+        Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']); // خروج
         Route::post('reset', [AuthController::class, 'resetPasswordWithOtp']);
 
     });
@@ -53,40 +55,37 @@ Route::prefix('v1')->group(function () {
     Route::prefix('author')->group(function () {
         Route::post('/send-otp', [AuthController::class, 'sendOtp']);          // ارسال کد تایید
     });
-
-    Route::prefix('user_ticket')->middleware('api.auth')->controller(\App\Http\Controllers\Api\Panel\TicketController::class)->group(function () {
+    Route::prefix('user_ticket')->middleware('auth:sanctum')->controller(\App\Http\Controllers\Api\Panel\TicketController::class)->group(function () {
         Route::get('/',  'index');
         Route::get('/show/{id}',  'show');
         Route::post('/store',  'store');
         Route::post('/update/{id}',  'update');
 
     });
-    Route::prefix('library')->middleware('api.auth')->controller(\App\Http\Controllers\Api\Panel\LibraryController::class)->group(function () {
+    Route::prefix('library')->middleware('auth:sanctum')->controller(\App\Http\Controllers\Api\Panel\LibraryController::class)->group(function () {
         Route::get('/',  'readingList');
         Route::get('/completed',  'completedList');
         Route::get('/liked',  'likedManhwas');
         Route::get('/all', 'userAllManhwas');
 
     });
-    Route::prefix('dashboard')->middleware('api.auth')->group(function () {
+    Route::prefix('dashboard')->middleware('auth:sanctum')->group(function () {
         Route::get('/', [\App\Http\Controllers\Api\Panel\DashboardController::class, 'dashboard']);          // ارسال کد تایید
     });
-    Route::prefix('profile')->middleware('api.auth')->group(function () {
+    Route::prefix('profile')->middleware('auth:sanctum')->group(function () {
         Route::get('/', [\App\Http\Controllers\Api\Panel\ProfileController::class, 'index']);
         Route::post('/update', [\App\Http\Controllers\Api\Panel\ProfileController::class, 'profile']);
         Route::post('/change-password', [\App\Http\Controllers\Api\Panel\ProfileController::class, 'changePassword']);
     });
 
-
-
-    Route::prefix('author')->middleware('api.auth')->group(function () {
+    Route::prefix('author')->middleware('auth:sanctum')->group(function () {
         Route::prefix('manhua')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\Auther\ManhwaController::class, 'index']);
             Route::post('/store', [\App\Http\Controllers\Api\Auther\ManhwaController::class, 'store']);
             Route::post('/update/{manhwa}', [\App\Http\Controllers\Api\Auther\ManhwaController::class, 'update']);
             Route::delete('/delete/{manhwa}', [\App\Http\Controllers\Api\Auther\ManhwaController::class, 'destroy']);
         });
-        Route::prefix('chapters')->middleware('api.auth')->group(function () {
+        Route::prefix('chapters')->middleware('auth:sanctum')->group(function () {
             Route::get('/index/{id}', [\App\Http\Controllers\Api\Auther\ChapterController::class, 'index']);
             Route::post('/store', [\App\Http\Controllers\Api\Auther\ChapterController::class, 'store']);
             Route::post('/update/{id}', [\App\Http\Controllers\Api\Auther\ChapterController::class, 'update']);

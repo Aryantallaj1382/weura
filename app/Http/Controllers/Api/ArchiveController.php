@@ -3,20 +3,37 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Manhwa;
 use Illuminate\Http\Request;
 
 class ArchiveController extends Controller
 {
+
+    public function get_category(Request $request)
+    {
+        $category = Category::select(['id','name', 'icon' ])->get();
+        return api_response($category);
+
+    }
     public function index(Request $request)
     {
         $manhuas = Manhwa::query();
         if ($request->has('search')) {
             $manhuas = $manhuas->where('title', 'like', '%' . $request->search . '%');
         }
+        if ($request->has('status')) {
+            $manhuas = $manhuas->where('status', $request->status);
+        }
+        if ($request->has('category_id')) {
+            $categoryId = $request->input('category_id');
+            $manhuas = $manhuas->whereHas('categories', function ($query) use ($categoryId) {
+                $query->where('categories.id', $categoryId);
+            });
+        }
+
         $manhuas->withAvg('ratings', 'rating');
 
-        // 🧭 مرتب‌سازی (sort)
         if ($request->has('sort')) {
             switch ($request->sort) {
                 case 'latest':
