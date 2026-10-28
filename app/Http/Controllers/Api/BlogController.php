@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\Comment;
+use App\Models\Manhwa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Morilog\Jalali\Jalalian;
 
 class BlogController extends Controller
 {
@@ -47,7 +50,7 @@ class BlogController extends Controller
         if ($request->category) {
             $blogs = $blogs->where('category_id', $request->category);
         }
-        $blogs = $blogs->paginate();
+        $blogs = $blogs->paginate(9);
         $blogs->getCollection()->transform(function ($item) {
             return [
                 'id' => $item->id,
@@ -94,5 +97,96 @@ class BlogController extends Controller
             'advertisement' => $blog?->advertisements?->first()?->image ?? null,
         ];
         return api_response($return);
+    }
+
+
+
+    public function comments($id)
+    {
+        $manhwa = Blog::findOrFail($id);
+        $user = auth()->user();
+        $comments = $manhwa->comments()->whereNull('parent_id')->get()->map(function ($comment) use ($user , $manhwa) {
+            $is_mine = $user && $comment->user_id == $user->id;
+            $is_author = $comment->user_id ==  $manhwa->author_id;
+
+            return [
+                'id' => $comment->id,
+                'content' => $comment->content,
+                'user' => $comment->user->name,
+                'created_at' => Jalalian::fromDateTime($comment->created_at)->ago(),
+                'is_mine' => $is_mine,
+                'is_author' => $is_author,
+                'replies' => $comment->replies()->get()->map(function ($comment) use ($user , $manhwa)  {
+                    $is_mine = $user && $comment->user_id == $user->id;
+                    $is_author = $comment->user_id ==  $manhwa->author_id;
+                    return [
+                        'id' => $comment->id,
+                        'content' => $comment->content,
+                        'user' => $comment->user->name,
+                        'created_at' => Jalalian::fromDateTime($comment->created_at)->ago(),
+                        'is_mine' => $is_mine,
+                        'is_author' => $is_author,
+
+                    ];
+                }),
+
+
+            ];
+        });
+
+        return api_response($comments);
+
+
+    }
+    public function store_comment(Request $request)
+    {
+        $request->validate([
+            'text' => 'required',
+            'parent_id' => 'nullable',
+            'manhwa_id' => 'required|exists:manhwas,id',
+        ]);
+        $user = auth()->user();
+        $comment = Comment::create([
+            'user_id' => $user->id,
+            'commentable_id' => $request->manhwa_id,
+            'commentable_type' => Blog::class,
+            'content' => $request->text,
+            'parent_id' => $request->parent_id,
+
+        ]);
+        return api_response([],'کامنت با موفقیت ثبت شد');
+
+    }
+    public function delete_comment($id)
+    {
+        $comment = Comment::find($id);
+        if (!$comment) {
+            return api_response([],'not found');
+        }
+        $user = auth()->user();
+        if ($comment->user_id == $user->id) {
+            $comment->delete();
+            return api_response([],'کامنت با موفقیت حذف شد');
+        }
+        return api_response([],'کامنت متعلق به شما نیست');
+    }
+    public function edit_comment(Request $request, $id)
+    {
+        $request->validate([
+            'text' => 'required',
+        ]);
+        $comment = Comment::find($id);
+        if (!$comment) {
+            return api_response([],'not found');
+        }
+        $user = auth()->user();
+        if ($comment->user_id == $user->id) {
+            $comment->update([
+                'content' => $request->text,
+            ]);
+            return api_response([],'کامنت با موفقیت حذف شد');
+        }
+        return api_response([],'کامنت متعلق به شما نیست');
+
     }
 }

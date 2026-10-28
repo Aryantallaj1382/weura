@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورود مدیر | ویورا</title>
 
+
+
     <!-- آیکون‌ها و چارت -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- فایل‌های کامپایل‌شده Tailwind از Vite -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app-BGsktFXB.css') }}">
-    <script type="module" src="{{ asset('build/assets/app-DlYOw6CL.js') }}"></script>
 
+    <link rel="stylesheet" href="{{ asset('public/build/assets/app-D1Y9OJ9V.css') }}">
+    <script type="module" src="{{ asset('public/build/assets/app-DlYOw6CL.js') }}"></script>
     <style>
         /* برای اینکه متن و placeholder در حالت تاریک واضح باشند */
         input::placeholder {
@@ -70,6 +72,7 @@
                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition font-semibold">
             ورود
         </button>
+{{--        {{Hash::make('1234')}}--}}
     </form>
 </div>
 

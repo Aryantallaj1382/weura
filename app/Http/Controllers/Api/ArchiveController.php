@@ -18,15 +18,19 @@ class ArchiveController extends Controller
     }
     public function index(Request $request)
     {
-        $manhuas = Manhwa::query();
+        $manhuas = Manhwa::where('admin_status','approved');
         if ($request->has('search')) {
             $manhuas = $manhuas->where('title', 'like', '%' . $request->search . '%');
         }
         if ($request->has('status')) {
             $manhuas = $manhuas->where('status', $request->status);
         }
-        if ($request->has('category_id')) {
-            $categoryId = $request->input('category_id');
+        if ($request->has('looking_id')) {
+            $manhuas = $manhuas->where('looking_for_id', $request->looking_id);
+        }
+
+        if ($request->has('category')) {
+            $categoryId = $request->input('category');
             $manhuas = $manhuas->whereHas('categories', function ($query) use ($categoryId) {
                 $query->where('categories.id', $categoryId);
             });
@@ -59,7 +63,7 @@ class ArchiveController extends Controller
            return [
                'id' => $item->id,
                'title' => $item->title,
-               'image' => $item->cover_image,
+               'image' => $item->cover_image_mobile,
                'rating' => $item->averageRating,
            ];
         });

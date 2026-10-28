@@ -16,6 +16,7 @@
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
+
             <!-- Password -->
             <div>
                 <x-input-label for="password" :value="__('رمز عبور')" />

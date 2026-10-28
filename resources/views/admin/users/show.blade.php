@@ -14,7 +14,7 @@
                     <select name="role" onchange="this.form.submit()"
                             class="text-sm rounded-lg px-2 py-1 border border-slate-700 bg-slate-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
                         <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
-                        <option value="writer" {{ $user->role === 'writer' ? 'selected' : '' }}>Writer</option>
+                        <option value="author" {{ $user->role === 'author' ? 'selected' : '' }}>author</option>
                         <option value="artist" {{ $user->role === 'artist' ? 'selected' : '' }}>Artist</option>
                         <option value="translator" {{ $user->role === 'translator' ? 'selected' : '' }}>Translator</option>
                     </select>

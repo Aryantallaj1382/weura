@@ -9,6 +9,7 @@ class ManhwaLike extends Model
     protected $fillable = [
         'user_id',
         'manhwa_id',
+        'is_delete',
     ];
 
     public function user()

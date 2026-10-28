@@ -9,16 +9,15 @@ use Symfony\Component\HttpFoundation\Response;use Illuminate\Support\Facades\Aut
 
 class AdminAuthenticate
 {
+
     protected function unauthenticated($request, array $guards)
     {
-        // همیشه JSON 401 برگردون
         abort(response()->json([
             'message' => 'Unauthorized'
         ], 401));
     }
     public function handle(Request $request, Closure $next, ...$guards)
     {
-        // بررسی guard ها (در اینجا از web استفاده می‌کنیم)
         if (! Auth::guard('web')->check()) {
             return $this->redirectTo($request);
         }

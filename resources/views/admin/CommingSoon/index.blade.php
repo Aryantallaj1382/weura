@@ -22,28 +22,31 @@
             <table class="w-full text-sm text-left text-slate-800 dark:text-slate-100">
                 <thead class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
                 <tr>
-                    <th class="px-4 py-3">عنوان</th>
-                    <th class="px-4 py-3">توضیحات</th>
-                    <th class="px-4 py-3">دسته‌بندی</th>
-                    <th class="px-4 py-3">تصویر</th>
-                    <th class="px-4 py-3">عملیات</th>
+                    <th class="px-4 py-3 text-center">عنوان</th>
+                    <th class="px-4 py-3 text-center">توضیحات</th>
+                    <th class="px-4 py-3 text-center">دسته‌بندی</th>
+                    <th class="px-4 py-3 text-center">تصویر</th>
+                    <th class="px-4 py-3 text-center">مقدار دونیت شده(تومان)</th>
+                    <th class="px-4 py-3 text-center">عملیات</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach ($manhuas as $manhua)
                     <tr class="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition">
-                        <td class="px-4 py-3 font-medium">{{ $manhua->title }}</td>
-                        <td class="px-4 py-3">{{ $manhua->description }}</td>
-                        <td class="px-4 py-3">{{ $manhua->category }}</td>
-                        <td class="px-4 py-3">
-                            <div class="flex flex-col items-center">
+                        <td class="px-4 py-3 font-medium text-center">{{ $manhua->title }}</td>
+                        <td class="px-4 py-3 text-center">{{ $manhua->description }}</td>
+                        <td class="px-4 py-3 text-center">{{ $manhua->category }}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex flex-col text-center">
                                 @if($manhua->image)
                                     <img src="{{ asset($manhua->image) }}" alt="" class="w-16 h-16 object-cover rounded mt-1">
                                 @endif
                             </div>
                         </td>
 
-                        <td class="px-4 py-3 space-x-2">
+                        <td class="px-4 py-3 text-center">{{ $manhua->price }}</td>
+
+                        <td class="px-4 py-3 space-x-2 text-center">
 
                             <form action="{{ route('admin.coming_soon_manhuas.destroy', $manhua->id) }}" method="POST" class="inline-block" onsubmit="return confirm('آیا مطمئن هستید؟');">
                                 @csrf

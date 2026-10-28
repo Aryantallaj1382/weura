@@ -37,8 +37,9 @@
                     <select name="status"
                             class="w-full p-2 rounded-lg border border-slate-600 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option value="">انتخاب وضعیت</option>
-                        <option value="ongoing" {{ old('status') === 'ongoing' ? 'selected' : '' }}>منتشر شده</option>
-                        <option value="ongoing" {{ old('status') === 'ongoing' ? 'selected' : '' }}>پیش‌نویس</option>
+                        <option value="ongoing" {{ old('status') === 'ongoing' ? 'selected' : '' }}> در حال انتشار</option>
+                        <option value="hiatus" {{ old('status') === 'hiatus' ? 'selected' : '' }}>دراپ شده</option>
+                        <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>به اتمام رسیده</option>
                     </select>
                 </div>
 
@@ -112,6 +113,11 @@
                 <div class="md:col-span-2">
                     <label class="block mb-1 text-slate-200 font-medium">کاور</label>
                     <input type="file" name="cover_image"
+                           class="w-full p-2 rounded-lg border border-slate-600 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block mb-1 text-slate-200 font-medium"> موبایل کاور</label>
+                    <input type="file" name="cover_image_mobile"
                            class="w-full p-2 rounded-lg border border-slate-600 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
             </div>

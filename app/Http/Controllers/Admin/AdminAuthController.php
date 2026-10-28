@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 class AdminAuthController extends Controller
 {
+
 
     public function showLoginForm()
     {
@@ -15,24 +19,23 @@ class AdminAuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required','email'],
-            'password' => ['required'],
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        // فقط ادمین‌ها
-        $credentials['is_admin'] = true;
+        $user = User::where('email', $request->email)->where('role','admin')->first();
 
-        if (Auth::guard('web')->attempt($credentials, $request->filled('remember'))) {
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
             $request->session()->regenerate();
-            return redirect()->intended(route('admin.dashboard'));
+            return redirect('/admin/dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'You do not have access',
+            'email' => 'ایمیل یا رمز عبور اشتباه است',
         ]);
     }
-
     public function logout(Request $request)
     {
         Auth::guard('web')->logout();
@@ -40,7 +43,7 @@ class AdminAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('admin.login');
+        return redirect()->route('login');
     }
 
 }

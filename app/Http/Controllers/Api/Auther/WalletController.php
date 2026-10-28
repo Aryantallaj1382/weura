@@ -35,25 +35,6 @@ class WalletController extends Controller
         return api_response($transactions);
 
     }
-    public function withdrawal(Request $request)
-    {
-        $request->validate([
-            'amount' => 'required',
-            'card_number' => 'required',
-        ]);
-        $user = auth()->user();
-        $wallet = Wallet::where('user_id', $user->id)->first();
-        $t = Transaction::create([
-            'wallet_id' => $wallet->id,
-            'amount' => $request->amount,
-            'card_number' => $request->card_number,
-            'operation_type' => 'withdrawal',
-            'status' => 'pending',
-        ]);
-
-
-        return api_response([], 'درخواست شما ثبت شد و بزودی مبلغ به حساب شما واریز میشود');
-    }
     public function deposit(Request $request)
     {
         $request->validate([

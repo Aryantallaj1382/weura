@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Manhwa extends Model
 {
-    protected $fillable = [
-        'title', 'status', 'summary', 'cover_image', 'author_id', 'artist_id' ,'view'
-    ];
-
+    protected $guarded = [];
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
@@ -47,8 +44,21 @@ class Manhwa extends Model
     {
         return $this->ratings()->avg('rating') ?? 0;
     }
+    public function getUserRatingAttribute()
+    {
+        $user = auth()->user();
+        if ($user) {
+            return $this->ratings()->where('user_id', $user->id)->first('rating') ?? 0;
+
+        }
+        return null;
+    }
 
     public function getCoverImageAttribute($value)
+    {
+        return $value ? asset('public/' . ltrim($value, '/')) : null;
+    }
+    public function getCoverImageMobileAttribute($value)
     {
         return $value ? asset('public/' . ltrim($value, '/')) : null;
     }
@@ -63,6 +73,13 @@ class Manhwa extends Model
         return $this->categories->first()?->name;
     }
 
-
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+    public function lookingFor()
+    {
+        return $this->belongsTo(LookingFor::class);
+    }
 
 }

@@ -29,5 +29,11 @@ class Blog extends Model
         {
             return $this->morphMany(Advertisement::class, 'advertisable');
         }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
 }
 

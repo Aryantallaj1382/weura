@@ -59,10 +59,23 @@
         </div>
 
         {{-- تصویر چپتر (در صورت وجود) --}}
-        @if($chapter->image)
-            <div class="bg-white dark:bg-slate-800 rounded-lg shadow p-4 flex justify-center">
-                <img src="{{ asset($chapter->image) }}" alt="{{ $chapter->title }}" class="max-w-full max-h-full object-contain">
+        @if(!empty($chapter->images))
+            <div class="bg-white dark:bg-slate-800 rounded-lg shadow p-4 space-y-4">
+
+                @foreach($chapter->images as $image)
+                    <div class="flex justify-center">
+                        <img
+                            src="{{ $image }}"
+                            alt="{{ $chapter->title }}"
+                            class="max-w-full h-auto object-contain rounded"
+                        >
+
+                    </div>
+                @endforeach
+
             </div>
         @endif
+
+
     </div>
 @endsection

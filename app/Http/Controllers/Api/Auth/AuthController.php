@@ -46,7 +46,8 @@ class AuthController extends Controller
 //                , 429);
 //        }
 
-        $code = random_int(100000, 999999);
+        $code = random_int(10000, 99999);
+
 
         $user->update([
             'sms_sent_tries' => 0,
@@ -82,7 +83,10 @@ class AuthController extends Controller
                 'trace' => $e->getTraceAsString() // اگر بخوای کل استک ترِیس بیاد
             ], 500);
         }
-        return api_response($responseMessages, 'کد تایید برای شما ارسال شد');
+        return api_response([
+            'remain'=>120,
+//            'code' => $code
+        ], 'کد تایید برای شما ارسال شد');
     }
 
     public function checkUserExists(Request $request)
@@ -90,17 +94,15 @@ class AuthController extends Controller
         $request->validate([
             'mobile' => 'required|string',
         ]);
-
-        $user = User::where('mobile', $request->input('mobile'))
-            ->first();
+        $user = User::where('mobile', $request->input('mobile'))->first();
         if ($user) {
             return api_response([
-                'exists' => true,
+                'is_exist' => true,
                 'message' => 'کاربر با این  شماره موبایل قبلاً ثبت‌نام کرده است.'
             ]);
         } else {
             return api_response([
-                'exists' => false,
+                'is_exist' => false,
                 'message' => 'کاربری با این  شماره موبایل وجود ندارد.'
             ]);
         }
@@ -114,67 +116,64 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'mobile'   => 'required|numeric|unique:users,mobile',
-            'password' => 'required|string|min:6',
-            'sms_code' => 'required|string',
+            'user_name' => 'required',
+            'password' => 'required',
         ]);
 
-        // پیدا کردن temp_user مربوط به این موبایل
-        $tempUser = TempUser::
-            where( 'mobile', $request->mobile)
-            ->first();
 
-        if (!$tempUser) {
-            return response()->json(['message' => 'کد تأیید پیدا نشد'], 422);
+        $user = auth()->user();
+        if (\App\Models\User::where('user_name', $request->user_name)
+            ->where('id', '!=', $user->id)
+            ->exists()) {
+
+            return api_response([], 'نام کاربری قبلاً انتخاب شده است.', 422);
         }
-
-        // بررسی تطابق کد
-        if ($tempUser->sms_sent_code !== $request->sms_code) {
-            return response()->json(['message' => 'کد وارد شده اشتباه است'], 422);
-        }
-
-        // بررسی زمان (حداکثر 2 دقیقه)
-        $sentAt = \Carbon\Carbon::parse($tempUser->sms_sent_date);
-        if ($sentAt->diffInMinutes(now()) > 2) {
-            return response()->json(['message' => 'کد منقضی شده است'], 422);
-        }
-
-        // ایجاد کاربر
-        $user = User::create([
-            'name'     => $request->name,
-            'mobile'   => $request->mobile,
-            'password' => \Hash::make($request->password),
+        $user = $user->update([
+            'user_name' => $request->user_name,
+            'password' => bcrypt($request->password),
         ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return api_response([
-            'token'   => $token,
-            'mobile' => $user->mobile,
-
-        ] , 'ثبت نام با موفقیت انجام شد');
+        return api_response([],'ثبت نام با موفقیت انجام شد', 200);
     }
-
-
     public function login(Request $request)
     {
         $request->validate([
-            'mobile' => 'required|numeric',
-            'password' => 'nullable|string',
-            'otp' => 'nullable|string',
+            'mobile' => 'required',
+            'password' => 'nullable',
+            'otp' => 'nullable',
         ]);
-
         if (!empty($request->otp) && !empty($request->password)) {
             return api_response([], 'لطفا فقط یکی از رمز یا کد پیامکی را وارد کنید', 422);
         }
 
-        $user = User::where('mobile', $request->mobile)->first();
+        $user = User::where('mobile',$request->mobile)->first();
+        if(!$user){
+            $tempUser = TempUser::
+            where( 'mobile', $request->mobile)
+                ->first();
 
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'mobile' => ['کاربر یافت نشد.'],
+            if (!$tempUser) {
+                return response()->json(['message' => 'کد تأیید پیدا نشد'], 422);
+            }
+
+            if ($tempUser->sms_sent_code !== $request->otp) {
+                return response()->json(['message' => 'کد وارد شده اشتباه است'], 422);
+            }
+
+            $sentAt = \Carbon\Carbon::parse($tempUser->sms_sent_date);
+            if ($sentAt->diffInMinutes(now()) > 2) {
+                return response()->json(['message' => 'کد منقضی شده است'], 422);
+            }
+            $user = User::create([
+                'mobile'   => $request->mobile,
+                'password' => \Hash::make($request->password),
             ]);
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return api_response([
+                'token'   => $token,
+                'mobile' => $user->mobile,
+
+            ] , 'ثبت نام با موفقیت انجام شد');
         }
         if (!empty($request->password)) {
             if (!Hash::check($request->password, $user->password)) {
@@ -190,20 +189,20 @@ class AuthController extends Controller
                 ]);
             }
 
+            $user->update([
+                'sms_sent_code' => null,
+            ]);
         }
-
         if (empty($request->otp) && empty($request->password)) {
             return api_response([], 'لطفا رمز عبور یا کد پیامکی را وارد کنید', 422);
         }
-
         $token = $user->createToken('auth_token')->plainTextToken;
-
         return api_response([
             'token' => $token,
-            'role' => $user->role,
             'mobile' => $user->mobile,
         ], 'ورود موفقیت‌آمیز');
     }
+
 
 
     public function resetPasswordWithOtp(Request $request)

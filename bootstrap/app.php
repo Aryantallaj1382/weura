@@ -33,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminAuthenticate::class, // middleware auth
             'api.auth' => \App\Http\Middleware\ApiAuthenticate::class,
 
+
         ]);
 
     })

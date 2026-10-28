@@ -1,6 +1,8 @@
 <?php
 
+
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminLookingForController;
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\AuthorRequestController;
 use App\Http\Controllers\Admin\BannerController;
@@ -11,11 +13,15 @@ use App\Http\Controllers\Admin\ComingSoonManhuaController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManhwaController;
 use App\Http\Controllers\Admin\NewsletterController;
+use App\Http\Controllers\Admin\OurTeamController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::get('/zarin_callback', [\App\Http\Controllers\Api\Panel\WalletController::class, 'zarin_callback'])->name('zarin_callback');
 
 
 Route::get('/mt', function () {
@@ -26,14 +32,17 @@ Route::get('/optimize', function () {
     Artisan::call('optimize');
     dd(Artisan::output());
 });
+Route::get('/', [AdminAuthController::class, 'showLoginForm']);
+
+
 
 Route::middleware('guest:web')->group(function() {
-    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 });
 
-Route::post('/logout', [AdminAuthController::class, 'logout'])->middleware('admin')->name('logout');
-Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
+Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', [DashboardController::class, 'index']);
@@ -46,6 +55,7 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('/requests', [AuthorRequestController::class, 'index'])->name('author-requests.index');
         Route::get('/requests/{id}', [AuthorRequestController::class, 'show'])->name('author-requests.show');
     });
+
 
     Route::prefix('system-settings')->group(function () {
         Route::get('/suggested', [SystemSettingController::class, 'editSuggested'])->name('suggested.edit');
@@ -73,8 +83,48 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::patch('transactions/{transaction}/status', [UserController::class, 'updateStatus'])->name('transactions.updateStatus');
+
+
+
+
+
+
+    Route::get('/looking',
+        [AdminLookingForController::class,'index']
+    )
+        ->name('admin.looking.index');
+
+
+    Route::post('/looking',
+        [AdminLookingForController::class,'store']
+    )
+        ->name('admin.looking.store');
+
+
+    Route::delete('/looking/{looking}',
+        [AdminLookingForController::class,'destroy']
+    )
+        ->name('admin.looking.destroy');
+
+    Route::get('/our_team', [OurTeamController::class, 'index'])->name('team.index');
+    Route::get('/our_team/create', [OurTeamController::class, 'create'])->name('team.create');
+    Route::post('/our_team/store', [OurTeamController::class, 'store'])->name('team.store');
+    Route::delete('/our_team/{id}', [App\Http\Controllers\Admin\OurTeamController::class, 'destroy'])->name('team.destroy');
+
+
     // Manhwa
+
+    Route::patch('/manhwa/{manhwa}/approve', [ManhwaController::class, 'approve'])
+        ->name('admin.manhwa.approve');
+
+    Route::patch('/manhwa/{manhwa}/reject', [ManhwaController::class, 'reject'])
+        ->name('admin.manhwa.reject');
+
+
+
+
     Route::get('/manhwa', [ManhwaController::class, 'index'])->name('manhwa.index');
+    Route::get('/manhwa2', [ManhwaController::class, 'index2'])->name('manhwa.index2');
     Route::get('/manhwa/create', [ManhwaController::class, 'create'])->name('manhwa.create');
     Route::post('/manhwa/store', [ManhwaController::class, 'store'])->name('manhwa.store');
     Route::get('/manhwa/{id}', [ManhwaController::class, 'show'])->name('manhwa.show');

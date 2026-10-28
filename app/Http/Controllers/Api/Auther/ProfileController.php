@@ -19,6 +19,7 @@ class ProfileController extends Controller
 
         User::update([
             'name' => $request->name,
+            'user_name' => $request->user_name,
             'email' => $request->email,
             'profile' => $imagePath,
         ]);
@@ -27,10 +28,17 @@ class ProfileController extends Controller
     public function changePassword(Request $request)
     {
         $user = auth()->user();
-        $request->validate([
-            'old_password' => 'required',
-            'password' => 'required',
-        ]);
+        $request->validate(
+            [
+                'old_password' => 'required',
+                'password' => 'required',
+            ],
+            [
+                'old_password.required' => 'رمز عبور فعلی الزامی است.',
+
+                'password.required' => 'رمز عبور جدید الزامی است.',
+            ]
+        );
         if ($user->password === bcrypt($request->old_password)) {
             $user->update([
                 'password' => bcrypt($request->password),

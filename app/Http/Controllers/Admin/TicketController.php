@@ -28,7 +28,7 @@ class TicketController extends Controller
     // نمایش یک تیکت خاص
     public function show($id)
     {
-        $ticket = Ticket::with(['user', 'messages'])->findOrFail($id);
+        $ticket = Ticket::where('id',$id)->with(['user', 'messages'])->firstOrCreate();
         return view('admin.tickets.show', compact('ticket'));
     }
 

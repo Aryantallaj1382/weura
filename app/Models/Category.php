@@ -13,5 +13,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Manhwa::class, 'manhua_category');
     }
+    public function getIconAttribute($value)
+    {
+        return $value ? asset('public/' . ltrim($value, '/')) : null;
+    }
 }
 

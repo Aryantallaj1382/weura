@@ -10,6 +10,17 @@
     <p class="bg-green-500 text-white p-2 rounded text-center">{{ session('success') }}</p>
     @endif
 
+    {{-- پیام خطا --}}
+    @if($errors->any())
+        <div class="bg-red-500 text-white p-3 rounded mb-4">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('admin.chapters.store', $manhwa->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
         @csrf
 

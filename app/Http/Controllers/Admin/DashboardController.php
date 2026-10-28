@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Chapter;
 use App\Models\Manhwa;
+use App\Models\SystemSetting;
 use App\Models\Ticket;
 use App\Models\Transaction;
 use App\Models\User;
@@ -17,6 +18,54 @@ use Morilog\Jalali\Jalalian;
 
 class DashboardController extends Controller
 {
+    public function main()
+    {
+
+        return view('admin.main');
+
+    }
+
+    public function aryan()
+    {
+        $file1 = SystemSetting::where('name','file')->first();
+        $value = url('public/'.$file1->value);
+        return view('admin.aryan', compact('value'));
+
+    }
+    public function soft()
+    {
+
+        return view('admin.soft');
+
+    }
+    public function save(Request $request)
+    {
+
+        $request->validate([
+            'image' => 'nullable',
+        ]);
+
+        $file1 = SystemSetting::where('name','file')->first();
+        $image = null;
+        if ($request->hasFile('image')) {
+            $destinationPath = public_path('image');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move($destinationPath, $filename);
+            $image = 'image/' . $filename;
+        }
+        $file1->update([
+            'value' => $image,
+        ]);
+
+
+
+        return redirect()->route('aryan')->with('success', 'دستت درد نکنه.');
+
+    }
     public function index()
     {
         // تعداد کاربران

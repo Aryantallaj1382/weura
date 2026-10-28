@@ -25,7 +25,7 @@ class TicketController extends Controller
     public  function show($id)
     {
         $ticket = Ticket::find($id);
-        $a = $ticket->messages->map(function ($item) {
+        $a = $ticket?->messages->map(function ($item) {
             return [
                 'id' => $item->id,
                 'message' => $item->message_text,
@@ -40,10 +40,16 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-        $request->validate([
-            'message_text' => 'required',
-            'issue_type' => 'required',
-        ]);
+        $request->validate(
+            [
+                'message_text' => 'required',
+                'issue_type' => 'required',
+            ],
+            [
+                'message_text.required' => 'متن پیام الزامی است.',
+                'issue_type.required' => 'انتخاب نوع درخواست الزامی است.',
+            ]
+        );
         $ticket = Ticket::create([
             'user_id' => $user->id,
             'issue_type' => $request->issue_type,
@@ -54,20 +60,25 @@ class TicketController extends Controller
             'message_text' => $request->message_text,
             'sender_type' => 'user',
         ]);
-        return api_response($ticket);
+        return api_response([],'تیکت با موفقیت ثبت شد');
     }
     public function update(Request $request, $id)
     {
         $ticket = Ticket::find($id);
         $user = auth()->user();
-        $request->validate([
-            'message_text' => 'required',
-        ]);
+        $request->validate(
+            [
+                'message_text' => 'required',
+            ],
+            [
+                'message_text.required' => 'متن پیام الزامی است.',
+            ]
+        );
         $ticket->messages()->create([
             'ticket_id' => $ticket->id,
             'message_text' => $request->message_text,
             'sender_type' => 'user',
         ]);
-        return api_response($ticket);
+        return api_response([]);
     }
 }

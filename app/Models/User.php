@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'user_name',
         'password',
         'mobile',
         'sms_sent_code',
@@ -42,6 +43,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'notify_new_chapter',
+        'notify_user_referral',
+        'notify_promotions',
+        'notify_donation'
     ];
 
     /**
@@ -55,6 +60,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function getProfileAttribute($value)
+    {
+        return $value ? url('public/'.$value) : null;
+
     }
 
     public function wallet()

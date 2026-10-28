@@ -12,7 +12,7 @@ class AuthorController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::where('role' , 'writer');
+        $query = User::where('role' , 'author');
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%')->orWhere('email', 'like', '%' . $request->search . '%');

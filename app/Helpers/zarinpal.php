@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\payment\Gateway;
-use App\Models\payment\Payment;
+use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
@@ -22,12 +22,10 @@ class zarinpal
         else
             $this->api_key = config('zarinpal.merchant_id');
     }
-    public function pay(Model $payable, int $amount, string $description = null ,string $callbackUrl_input)
+    public function pay($user_id,int $amount ,string $callbackUrl_input)
     {
 
         $this->set_amount($amount);
-
-        $gateway = $gateway ?? Gateway::where('name', 'zarinpal')->firstOrFail();
 
         $response = zarinpal()
             ->merchantId(config('zarinpal.merchant_id'))
@@ -40,13 +38,12 @@ class zarinpal
         if (!$response->success()) {
         throw new \Exception($response->error()->message());
     }
-        $payable->payment()->create([
-            'user_id' => auth()->id(),
-            'gateway_id' => $gateway->id,
+     payment::create([
+            'user_id' => $user_id,
+            'gateway' => 'zarinpal',
             'amount' => $amount,
             'authority' => $response->authority(),
             'status' => 'pending',
-            'description' => $description,
         ]);
 
         return [
@@ -93,5 +90,17 @@ class zarinpal
 
         return $this;
     }
+    private function generateUniqueCode($userId)
+    {
+        $today = Carbon::today()->format('Ymd');
 
+        $unique = md5($userId . $today . microtime());
+
+        $part1 = $userId;
+        $part2 = substr(preg_replace('/[^0-9]/', '', hexdec(substr($unique, 0, 6))), 0, 2);
+        $part3 = substr(preg_replace('/[^0-9]/', '', hexdec(substr($unique, 6, 6))), 0, 2);
+        $part4 = substr(preg_replace('/[^0-9]/', '', hexdec(substr($unique, 12, 6))), 0, 2);
+
+        return "{$part1}-{$part2}-{$part3}-{$part4}";
+    }
 }

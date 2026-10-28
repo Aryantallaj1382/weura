@@ -13,6 +13,7 @@ class AuthorRequest extends Model
         'writing_skill',
         'sample_file',
         'software',
+        'social_media',
         'need_support',
     ];
 
